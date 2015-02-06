@@ -9,8 +9,8 @@ public class TerrainManager : MonoBehaviour
 
 	public Tile[] tile;
 	private float tileW;
-	public Transform player;
-	
+	private Transform player;
+
 	public Prop[] propPrefabs;
 	private Dictionary<string, List<Prop>> propPool;
 	public int maxObjsPerTile = 30;
@@ -18,6 +18,7 @@ public class TerrainManager : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		player = GameObject.FindGameObjectWithTag("Player").transform;
 		tileW = Vector3.Distance(tile[0].transform.position, tile[1].transform.position);
 		propPool = new Dictionary<string, List<Prop>>();
 		foreach (Prop prop in propPrefabs)

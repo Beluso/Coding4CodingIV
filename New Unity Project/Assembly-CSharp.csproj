@@ -50,6 +50,8 @@
      <Compile Include="Assets\Scripts\BulletManager.cs" />
      <Compile Include="Assets\Scripts\Fire.cs" />
      <Compile Include="Assets\Scripts\HeightMap.cs" />
+     <Compile Include="Assets\Scripts\LODManager.cs" />
+     <Compile Include="Assets\Scripts\MeshManager.cs" />
      <Compile Include="Assets\Scripts\Prop.cs" />
      <Compile Include="Assets\Scripts\TerrainManager.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />

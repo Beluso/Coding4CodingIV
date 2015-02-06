@@ -13,11 +13,6 @@ public class HeightMap : MonoBehaviour
 	private Mesh mesh;
 	public float max_height = 10f;
 
-	void Awake()
-	{
-
-	}
-
 	// Use this for initialization
 	void Start () 
 	{

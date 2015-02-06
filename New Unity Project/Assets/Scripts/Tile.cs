@@ -2,9 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public enum MeshDetail
+{
+	HIGH,
+	MED,
+	LOW
+}
+
 public class Tile : MonoBehaviour 
 {
 	public List<Prop> props;
+	public MeshDetail meshDetail = MeshDetail.LOW;
 	// Use this for initialization
 	void Awake () 
 	{
