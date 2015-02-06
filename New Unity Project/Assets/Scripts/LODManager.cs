@@ -42,7 +42,7 @@ public class LODManager : MonoBehaviour
 			if (tile.meshDetail != reqDetail)
 			{
 				tile.meshDetail = reqDetail;
-				MeshManager.Instance.GenerateMesh(tileW, tile.GetComponent<MeshFilter>(), tile.meshDetail, tile.transform.localScale.x);
+				MeshManager.Instance.Regenerate(tileW, tile.GetComponent<MeshFilter>(), tile.meshDetail, tile.transform.localScale.x);
 			}
 		}
 	}

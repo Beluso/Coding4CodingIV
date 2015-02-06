@@ -23,15 +23,15 @@ public class TerrainManager : MonoBehaviour
 		propPool = new Dictionary<string, List<Prop>>();
 		foreach (Prop prop in propPrefabs)
 			propPool[prop.propName] = new List<Prop>();
-		for (int i = 0; i < tile.Length; i++)
-			tile[i].gameObject.SetActive(false);
+//		for (int i = 0; i < tile.Length; i++)
+//			tile[i].gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		TileShift();
-		TileDisplay();
+		//TileDisplay();
 		/*
 		 * for each terrain tile
 		 * 	if x dist or z dist < .5 * w

@@ -1,32 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MeshManager 
+public class MeshManager : MonoBehaviour
 {
+	private MeshManager(){}
 
-
-//	public int width = 100;
-//	public int height = 100;
-
-//	public float spacing = 4.0f;
-
-//	public Texture2D heightmap;
-//	private MeshFilter meshFilter;
-//	private Mesh mesh;
-//	public float max_height = 10f;
-
-	private static MeshManager _instance;
+	private static MeshManager instance;
 
 	public static MeshManager Instance
 	{
 		get
 		{
-			if (_instance == null)
-				_instance = new MeshManager();
-			return _instance;
+			if (instance == null)
+				instance = GameObject.FindGameObjectWithTag("MeshManager").GetComponent<MeshManager>();
+			return instance;
 		}
 	}
-
 	// Use this for initialization
 	void Start () 
 	{
@@ -36,51 +25,59 @@ public class MeshManager
 //		StartCoroutine(SetHeights());
 	}
 
-//	IEnumerator SetHeights()
-//	{
-//		float h;
-//		Vector2 uv;
-//		Vector3[] verts = mesh.vertices;
-//
-//		for (int i = 0; i < verts.Length; i++)
-//		{
-//			verts[i] = mesh.vertices[i];
-//			uv = mesh.uv[i];
-//			h = heightmap.GetPixelBilinear(uv.x, uv.y).r;
-//
-//			verts[i].y += h * max_height;
-//
-//			if ( i % 30 == 29)
-//			{
-//				mesh.vertices = verts;
-//				meshFilter.mesh = mesh;
-//				yield return 0;
-//			}
-//		}
-//		mesh.vertices = verts;
-//		mesh.RecalculateNormals ();
-//		meshFilter.mesh = mesh;
-//		gameObject.GetComponent<MeshCollider> ().sharedMesh = null;
-//		gameObject.GetComponent<MeshCollider> ().sharedMesh = mesh;
-//	}
+	public void Regenerate(float tileW, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
+	{
+		GenerateMesh(tileW, meshFilter, meshDetail, localScale);
+		StartCoroutine(SetHeights(meshFilter));
+	}
 
-	public void GenerateMesh(float tileW, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
+
+	private IEnumerator SetHeights(MeshFilter meshFilter)
+	{
+		float h;
+		Vector2 uv;
+		Mesh mesh = meshFilter.mesh;
+		Vector3[] verts = mesh.vertices;
+		Random.seed = (int)(meshFilter.gameObject.transform.position.x * 1000 + meshFilter.gameObject.transform.position.z);
+		for (int i = 0; i < verts.Length; i++)
+		{
+			verts[i] = mesh.vertices[i];
+			uv = mesh.uv[i];
+			h = Random.Range (0.0f, 1.0f);
+
+			verts[i].y += h;
+
+			if ( i % 30 == 29)
+			{
+				mesh.vertices = verts;
+				meshFilter.mesh = mesh;
+				yield return 0;
+			}
+		}
+		mesh.vertices = verts;
+		mesh.RecalculateNormals ();
+		meshFilter.mesh = mesh;
+		meshFilter.GetComponent<MeshCollider> ().sharedMesh = null;
+		meshFilter.GetComponent<MeshCollider> ().sharedMesh = meshFilter.mesh;
+	}
+
+	private void GenerateMesh(float tileW, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
 	{
 		int width;
 		int height;
 		float spacing;
 		if (meshDetail == MeshDetail.HIGH)
 		{
-			width =	height = 100;
+			width =	height = 10;
 		}
 		else if (meshDetail == MeshDetail.MED)
 		{
-			width = height = 50;
+			width = height = 5;
 		}
 		else
 		{
 			// low detail
-			width = height = 25;
+			width = height = 2;
 		}
 
 		spacing = (tileW / (float)width) / localScale;
