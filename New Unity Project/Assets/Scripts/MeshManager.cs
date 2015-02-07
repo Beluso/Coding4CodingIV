@@ -28,37 +28,38 @@ public class MeshManager : MonoBehaviour
 	public void Regenerate(float tileW, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
 	{
 		GenerateMesh(tileW, meshFilter, meshDetail, localScale);
-		StartCoroutine(SetHeights(meshFilter));
+		StartCoroutine(SetHeights(meshFilter, localScale));
 	}
 
 
-	private IEnumerator SetHeights(MeshFilter meshFilter)
+	private IEnumerator SetHeights(MeshFilter meshFilter, float localScale)
 	{
 		float h;
-		Vector2 uv;
 		Mesh mesh = meshFilter.mesh;
 		Vector3[] verts = mesh.vertices;
-		Random.seed = (int)(meshFilter.gameObject.transform.position.x * 1000 + meshFilter.gameObject.transform.position.z);
 		for (int i = 0; i < verts.Length; i++)
 		{
 			verts[i] = mesh.vertices[i];
-			uv = mesh.uv[i];
-			h = Random.Range (0.0f, 1.0f);
-
+//			Random.seed = (int)((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale)* 1000 + meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
+//			h = Random.Range (0, 3);
+			h = 1.0f * Mathf.PerlinNoise((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale)* 1000, meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
+			h -= 0.5f;
 			verts[i].y += h;
 
-			if ( i % 30 == 29)
+			if ( i % 300 == 299)
 			{
 				mesh.vertices = verts;
 				meshFilter.mesh = mesh;
 				yield return 0;
 			}
 		}
+		Debug.Log (Mathf.PerlinNoise(2.0f, 2.0f));
 		mesh.vertices = verts;
 		mesh.RecalculateNormals ();
 		meshFilter.mesh = mesh;
 		meshFilter.GetComponent<MeshCollider> ().sharedMesh = null;
 		meshFilter.GetComponent<MeshCollider> ().sharedMesh = meshFilter.mesh;
+//		yield return 0;
 	}
 
 	private void GenerateMesh(float tileW, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
@@ -68,16 +69,16 @@ public class MeshManager : MonoBehaviour
 		float spacing;
 		if (meshDetail == MeshDetail.HIGH)
 		{
-			width =	height = 10;
+			width =	height = 32;
 		}
 		else if (meshDetail == MeshDetail.MED)
 		{
-			width = height = 5;
+			width = height = 16;
 		}
 		else
 		{
 			// low detail
-			width = height = 2;
+			width = height = 8;
 		}
 
 		spacing = (tileW / (float)width) / localScale;
@@ -95,9 +96,7 @@ public class MeshManager : MonoBehaviour
 				verts[i].x = (x - width / 2.0f) * spacing;
 				verts[i].y = 0;
 				verts[i].z = (z - height / 2.0f) * spacing;
-
 				norms[i] = new Vector3(0.0f,1.0f,0.0f);
-
 				uvs[i].x = x / (float)width;
 				uvs[i].y = z / (float)height;
 
@@ -119,7 +118,6 @@ public class MeshManager : MonoBehaviour
 			tris[t+5] = n + width + 1;
 			t += 6;
 		}
-
 		Mesh mesh = new Mesh ();
 		mesh.vertices = verts;
 		mesh.normals = norms;

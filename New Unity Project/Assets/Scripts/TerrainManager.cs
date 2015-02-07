@@ -8,7 +8,7 @@ public class TerrainManager : MonoBehaviour
 	public float shiftThreshold = 2.0f;
 
 	public Tile[] tile;
-	private float tileW;
+	public float tileW;
 	private Transform player;
 
 	public Prop[] propPrefabs;
@@ -19,7 +19,22 @@ public class TerrainManager : MonoBehaviour
 	void Start () 
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		tileW = Vector3.Distance(tile[0].transform.position, tile[1].transform.position);
+		float dist = float.PositiveInfinity;
+		GameObject[] temp = GameObject.FindGameObjectsWithTag("Terrain");
+		tile = new Tile[temp.Length];
+		for (int i = 0; i < temp.Length; i++)
+			tile[i] = temp[i].GetComponent<Tile>();
+		foreach (Tile ti in tile)
+		{
+			if (ti != tile[0])
+			{
+				if (Vector3.Distance(ti.transform.position, tile[0].transform.position) < dist)
+				{
+					dist = Vector3.Distance(ti.transform.position, tile[0].transform.position);
+				}
+			}
+		}
+		tileW = dist;
 		propPool = new Dictionary<string, List<Prop>>();
 		foreach (Prop prop in propPrefabs)
 			propPool[prop.propName] = new List<Prop>();
@@ -31,7 +46,7 @@ public class TerrainManager : MonoBehaviour
 	void Update () 
 	{
 		TileShift();
-		//TileDisplay();
+		TileDisplay();
 		/*
 		 * for each terrain tile
 		 * 	if x dist or z dist < .5 * w
@@ -74,12 +89,12 @@ public class TerrainManager : MonoBehaviour
 
 			if (Vector2.Distance(playerPos, tilePos) < displayThreshold * tileW)
 			{
-				if (ti.gameObject.activeSelf == false)
+				if (ti.active == false)
 					StartCoroutine(ActivateTile(ti));
 			}
 			else
 			{
-				if (ti.gameObject.activeSelf == true)
+				if (ti.active == true)
 					DeactivateTile(ti);
 			}
 
@@ -96,26 +111,44 @@ public class TerrainManager : MonoBehaviour
 		 * tile A and tile B alternate calling random
 		 */
 
-		ti.gameObject.SetActive(true);
+		ti.active = true;
 
 		Random.seed = (int)(ti.transform.position.x * 1000 + ti.transform.position.z);
 		int numObj = Random.Range (0, maxObjsPerTile);
+		/*
+		 * random table for:
+		 * int[] type[numObj]
+		 * float[] scale[numObj]
+		 * float[] rotation[numObj]
+		 * vector2[] pos[numObj]
+		 */
+		int[] type = new int[numObj];
+		float[] scale = new float[numObj];
+		float[] rotation = new float[numObj];
+		Vector2[] pos = new Vector2[numObj];
+
+		for (int i = 0; i < type.Length; i++)
+		{
+			type[i] = Random.Range(0, propPool.Count);
+			scale[i] = Random.Range (0.9f, 1.1f);
+			rotation[i] = Random.Range (0.0f, 360.0f);
+			pos[i] = new Vector2(Random.Range(-tileW / 2, tileW / 2), Random.Range(-tileW / 2, tileW / 2));
+		}
+
 		Prop prop;
-		int type;
 		for (int i = 0; i < numObj; i++)
 		{
-			type = Random.Range (0, propPool.Count);
-			prop = GetObj(propPrefabs[type]);
-			prop.transform.localScale = propPrefabs[type].transform.localScale;
-			prop.transform.rotation = propPrefabs[type].transform.rotation;
-			prop.transform.position = propPrefabs[type].transform.position;
+			prop = GetObj(propPrefabs[type[i]]);
+			prop.transform.localScale = propPrefabs[type[i]].transform.localScale;
+			prop.transform.rotation = propPrefabs[type[i]].transform.rotation;
+			prop.transform.position = propPrefabs[type[i]].transform.position;
 			
 			ti.props.Add (prop);
 			
-			prop.transform.localScale = new Vector3(prop.transform.localScale.x, prop.transform.localScale.y * Random.Range (0.9f, 1.1f), prop.transform.localScale.z);
-			prop.transform.rotation.Set (prop.transform.rotation.x, prop.transform.rotation.y * Random.Range (0, 360), prop.transform.rotation.z, prop.transform.rotation.w);
+			prop.transform.localScale = new Vector3(prop.transform.localScale.x, prop.transform.localScale.y * scale[i], prop.transform.localScale.z);
+			prop.transform.rotation.Set (prop.transform.rotation.x, prop.transform.rotation.y * rotation[i], prop.transform.rotation.z, prop.transform.rotation.w);
 			prop.transform.position = ti.transform.position;
-			prop.transform.position = new Vector3(ti.transform.position.x + Random.Range (-tileW/2 , tileW/2), ti.transform.position.y, ti.transform.position.z + Random.Range(-tileW/2, tileW/2));
+			prop.transform.position = new Vector3(ti.transform.position.x + pos[i].x, ti.transform.position.y, ti.transform.position.z + pos[i].y);
 
 			if (i % 20 == 19)
 				yield return null;
@@ -124,7 +157,7 @@ public class TerrainManager : MonoBehaviour
 	
 	void DeactivateTile(Tile ti)
 	{
-		ti.gameObject.SetActive (false);
+		ti.active = false;
 		ClearObjs(ti.props);
 	}
 	

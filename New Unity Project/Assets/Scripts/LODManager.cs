@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class LODManager : MonoBehaviour 
 {
-	private float tileW;
 	private TerrainManager terrainManager;
 	private Transform player;
 
@@ -13,7 +12,6 @@ public class LODManager : MonoBehaviour
 	{
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		terrainManager = GetComponent<TerrainManager>();
-		tileW = Vector3.Distance(terrainManager.tile[0].transform.position, terrainManager.tile[1].transform.position);
 	}
 	
 	// Update is called once per frame
@@ -32,9 +30,9 @@ public class LODManager : MonoBehaviour
 			MeshDetail reqDetail;
 			// determine how close this tile is to the player
 			// the tile the player is standing on is always high detail, if the player wanders close to an outer tile, set to high detail
-			if (Vector2.Distance(playerPos, tilePos) < terrainManager.displayThreshold * tileW)
+			if (Vector2.Distance(playerPos, tilePos) < terrainManager.displayThreshold * terrainManager.tileW)
 				reqDetail = MeshDetail.HIGH;
-			else if (Vector2.Distance(playerPos, tilePos) < terrainManager.displayThreshold * tileW * 2)
+			else if (Vector2.Distance(playerPos, tilePos) < terrainManager.displayThreshold * terrainManager.tileW * 2)
 				reqDetail = MeshDetail.MED;
 			else
 				reqDetail = MeshDetail.LOW;
@@ -42,7 +40,7 @@ public class LODManager : MonoBehaviour
 			if (tile.meshDetail != reqDetail)
 			{
 				tile.meshDetail = reqDetail;
-				MeshManager.Instance.Regenerate(tileW, tile.GetComponent<MeshFilter>(), tile.meshDetail, tile.transform.localScale.x);
+				MeshManager.Instance.Regenerate(terrainManager.tileW, tile.GetComponent<MeshFilter>(), tile.meshDetail, tile.transform.localScale.x);
 			}
 		}
 	}
