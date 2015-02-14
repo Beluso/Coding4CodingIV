@@ -150,7 +150,6 @@ public class MeshManager : MonoBehaviour
 
 	private void MakeSkirts(int width, int height, float tileW, float spacing, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
 	{
-		// we know that height = width, so we can go down using width instead of using height
 		MeshDet[] skirt = new MeshDet[4];
 		int i = 0;
 		for (i = 0; i < 4; i++)
@@ -161,46 +160,76 @@ public class MeshManager : MonoBehaviour
 			skirt[i].uvs = new Vector2[(width + 1) * 2];
 			skirt[i].tris = new int[3 * 2 * width];
 		}
-		//top
 		i = 0;
-		for (int x = 0; x < width + 1; x++)
+		for (int z = 0; z < 2; z++)
 		{
-			skirt[0].verts[i].x = (x - width / 2.0f) * spacing;
-			skirt[0].verts[i].y = 0;
-			skirt[0].verts[i].z = (0 - height / 2.0f) * spacing;
-			skirt[0].norms[i] = new Vector3(0.0f,0.0f,1.0f);
-			skirt[0].uvs[i].x = x / (float)width;
-			skirt[0].uvs[i].y = 0 / (float)height;
-			i++;
-		}
-		//right
-		i = 0;
-		for (int z = 0; z < height + 1; z++)
-		{
-			skirt[1].verts[i].x = (width - width / 2.0f) * spacing;
-			skirt[1].verts[i].y = 0;
-			skirt[1].verts[i].z = (z - height / 2.0f) * spacing;
-			i++;
-		}
-		//down
-		i = 0;
-		for (int x = 0; x < width + 1; x++)
-		{
-			skirt[2].verts[i].x = (x - width / 2.0f) * spacing;
-			skirt[2].verts[i].y = 0;
-			skirt[2].verts[i].z = (height - height / 2.0f) * spacing;
-			i++;
-		}
-		//left
-		i = 0;
-		for (int z = 0; z < height + 1; z++)
-		{
-			skirt[3].verts[i].x = (0 - width / 2.0f) * spacing;
-			skirt[3].verts[i].y = 0;
-			skirt[3].verts[i].z = (z - height / 2.0f) * spacing;
-			i++;
+			for (int x = 0; x < width + 1; x++)
+			{
+				//top
+				skirt[0].verts[i].x = (x - width / 2.0f) * spacing;
+				skirt[0].verts[i].y = 0;
+				skirt[0].verts[i].z = (0 - height / 2.0f) * spacing;
+				skirt[0].norms[i] = new Vector3(0.0f,0.0f,1.0f);
+				skirt[0].uvs[i].x = x / (float)width;
+				skirt[0].uvs[i].y = z / (float)height;
+				//right
+				skirt[1].verts[i].x = (width - width / 2.0f) * spacing;
+				skirt[1].verts[i].y = 0;
+				skirt[1].verts[i].z = (x - height / 2.0f) * spacing;
+				skirt[1].norms[i] = new Vector3(1.0f,0.0f,0.0f);
+				skirt[1].uvs[i].x = x / (float)width;
+				skirt[1].uvs[i].y = z / (float)height;
+				//down
+				skirt[2].verts[i].x = (x - width / 2.0f) * spacing;
+				skirt[2].verts[i].y = 0;
+				skirt[2].verts[i].z = (height - height / 2.0f) * spacing;
+				skirt[2].norms[i] = new Vector3(0.0f,0.0f,-1.0f);
+				skirt[2].uvs[i].x = x / (float)width;
+				skirt[2].uvs[i].y = z / (float)height;
+				//left
+				skirt[1].verts[i].x = (0 - width / 2.0f) * spacing;
+				skirt[1].verts[i].y = 0;
+				skirt[1].verts[i].z = (x - height / 2.0f) * spacing;
+				skirt[1].norms[i] = new Vector3(-1.0f,0.0f,0.0f);
+				skirt[1].uvs[i].x = x / (float)width;
+				skirt[1].uvs[i].y = z / (float)height;
+
+				i++;
+			}
 		}
 
+		CombineInstance[] combine = new CombineInstance[skirt.Length + 1];
+		for (int b = 0; b < skirt.Length; b++)
+		{
+			int t = 0;
+			for (int n = 0; n < skirt[b].verts.Length; n++)
+			{
+				if (n % (width + 1) == width)
+					continue;
+				if (n / (height + 1) == height)
+					continue;
+				skirt[b].tris[t  ] = n;
+				skirt[b].tris[t+1] = n + 1;
+				skirt[b].tris[t+2] = n + width + 1;
+				skirt[b].tris[t+3] = n + 1;
+				skirt[b].tris[t+4] = n + width + 2;
+				skirt[b].tris[t+5] = n + width + 1;
+				t += 6;
+			}
 
+			Mesh mesh = new Mesh ();
+			mesh.vertices = skirt[b].verts;
+			mesh.normals = skirt[b].norms;
+			mesh.uv = skirt[b].uvs;
+			mesh.triangles = skirt[b].tris;
+			mesh.name = "not null";
+			skirt[b].meshFilter.mesh = mesh;
+
+			combine[b].mesh = skirt[i].meshFilter.sharedMesh;
+			combine[b].transform = skirt[i].meshFilter.transform.localToWorldMatrix;
+		}
+		combine [skirt.Length].mesh = meshFilter.sharedMesh;
+		combine [skirt.Length].transform = meshFilter.transform.localToWorldMatrix;
+		meshFilter.mesh.CombineMeshes (combine);
 	}
 }
