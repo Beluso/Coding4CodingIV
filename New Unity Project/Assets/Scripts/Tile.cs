@@ -14,6 +14,7 @@ public class Tile : MonoBehaviour
 	public List<Prop> props;
 	public MeshDetail meshDetail = MeshDetail.LOW;
 	public bool active = false;
+	public GameObject[] skirts;
 	// Use this for initialization
 	void Awake () 
 	{
