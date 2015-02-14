@@ -4,9 +4,9 @@ using System.Collections;
 public class MeshManager : MonoBehaviour
 {
 	private MeshManager(){}
-
+	
 	private static MeshManager instance;
-
+	
 	public static MeshManager Instance
 	{
 		get
@@ -19,33 +19,37 @@ public class MeshManager : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-//		meshFilter = gameObject.GetComponent<MeshFilter> ();
-//		mesh = meshFilter.mesh;
-//		GenerateMesh ();
-//		StartCoroutine(SetHeights());
+		//		meshFilter = gameObject.GetComponent<MeshFilter> ();
+		//		mesh = meshFilter.mesh;
+		//		GenerateMesh ();
+		//		StartCoroutine(SetHeights());
 	}
-
+	
 	public void Regenerate(float tileW, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
 	{
 		GenerateMesh(tileW, meshFilter, meshDetail, localScale);
 		StartCoroutine(SetHeights(meshFilter, localScale));
 	}
-
-
+	
+	
 	private IEnumerator SetHeights(MeshFilter meshFilter, float localScale)
 	{
 		float h;
 		Mesh mesh = meshFilter.mesh;
 		Vector3[] verts = mesh.vertices;
+		
+		
 		for (int i = 0; i < verts.Length; i++)
 		{
 			verts[i] = mesh.vertices[i];
-//			Random.seed = (int)((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale)* 1000 + meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
-//			h = Random.Range (0, 3);
-			h = 1.0f * Mathf.PerlinNoise((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale)* 1000, meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
-			h -= 0.5f;
+			Random.seed = (int)((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale) * 1000 + meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
+			h = Mathf.PerlinNoise((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale), meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
+			h += Random.Range(0.0f, 2.0f);
+			if (h < 2.0f)
+				h = 2.0f;
+			h -= 2.0f;
 			verts[i].y += h;
-
+			
 			if ( i % 300 == 299)
 			{
 				mesh.vertices = verts;
@@ -53,15 +57,14 @@ public class MeshManager : MonoBehaviour
 				yield return 0;
 			}
 		}
-		Debug.Log (Mathf.PerlinNoise(2.0f, 2.0f));
 		mesh.vertices = verts;
 		mesh.RecalculateNormals ();
 		meshFilter.mesh = mesh;
 		meshFilter.GetComponent<MeshCollider> ().sharedMesh = null;
 		meshFilter.GetComponent<MeshCollider> ().sharedMesh = meshFilter.mesh;
-//		yield return 0;
+		//		yield return 0;
 	}
-
+	
 	private void GenerateMesh(float tileW, MeshFilter meshFilter, MeshDetail meshDetail, float localScale)
 	{
 		int width;
@@ -80,14 +83,14 @@ public class MeshManager : MonoBehaviour
 			// low detail
 			width = height = 8;
 		}
-
+		
 		spacing = (tileW / (float)width) / localScale;
-
+		
 		Vector3[] verts = new Vector3[(width + 1) * (height + 1)];
 		Vector3[] norms = new Vector3[(width + 1) * (height + 1)];
 		Vector2[] uvs = new Vector2[(width + 1) * (height + 1)];
 		int[] tris = new int[3 * 2 * (width * height)]; 			// 3 points per triangle, 2 triangles per quad, width * height quads
-
+		
 		int i = 0;
 		for (float x = 0; x < width + 1; x++)
 		{
@@ -99,7 +102,7 @@ public class MeshManager : MonoBehaviour
 				norms[i] = new Vector3(0.0f,1.0f,0.0f);
 				uvs[i].x = x / (float)width;
 				uvs[i].y = z / (float)height;
-
+				
 				i++;
 			}
 		}

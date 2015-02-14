@@ -2,11 +2,16 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\MeshManager.cs">
     <Files>
+<<<<<<< HEAD
       <File FileName="Assets\Scripts\TerrainManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\MeshManager.cs" Line="54" Column="5" />
       <File FileName="Assets\Scripts\LODManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Tile.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\HeightMap.cs" Line="1" Column="1" />
+=======
+      <File FileName="Assets\Scripts\MeshManager.cs" Line="133" Column="1" />
+      <File FileName="..\..\Quarter 7\Coding for Games IV\Week3\Coding for Coding 4\New Unity Project\Assets\Scripts\MeshManager.cs" Line="1" Column="1" />
+>>>>>>> 596120caf9c22141d4c1c67268b24705a4894ae7
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
