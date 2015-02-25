@@ -128,5 +128,86 @@ public class MeshManager : MonoBehaviour
 		mesh.triangles = tris;
 		mesh.name = "not null";
 		meshFilter.mesh = mesh;
+
+//		spacing = (tileW / (float)width) / localScale;
+//		
+//		Vector3[] verts = new Vector3[(width + 3) * (height + 3)];
+//		Vector3[] norms = new Vector3[(width + 3) * (height + 3)];
+//		Vector2[] uvs = new Vector2[(width + 3) * (height + 3)];
+//		int[] tris = new int[3 * 2 * ((width + 1) * (height + 1))];		// 3 points per triangle, 2 triangles per quad, width * height quads
+//		
+//		int i = 0;
+//		for (float x = 0; x < width + 3; x++)
+//		{
+//			for (int z = 0; z < height + 3; z++)
+//			{
+//				/*
+//				 * mesh of size 32x32 has verts of 33x33
+//				 * make mesh with verts 35x35
+//				 * shift up and to the left one unit
+//				 * if vert is in first row, move down one extra unit
+//				 * if vert is in last row, move up one extra unit
+//				 * if vert is first of the row, move right one unit
+//				 * if vert is last of the row, move left one unit
+//				 */
+//				
+//				//default case
+//				verts[i].x = (x - width / 2.0f) * spacing - spacing;
+//				verts[i].y = 0;
+//				verts[i].z = (z - height / 2.0f) * spacing  + spacing;
+//				
+//				if (z == 0) //first row, move down one unit
+//				{
+//					verts[i].x = (x - width / 2.0f) * spacing - spacing;
+//					verts[i].y = 0;
+//					verts[i].z = (z - height / 2.0f) * spacing;
+//				}
+//				if (z == height + 2) //last row, move up one unit
+//				{
+//					verts[i].x = (x - width / 2.0f) * spacing - spacing;
+//					verts[i].y = 0;
+//					verts[i].z = (z - height / 2.0f) * spacing  + 2 * spacing;
+//				}
+//				if (x == 0) //first of the row, move right one unit
+//				{
+//					verts[i].x = (x - width / 2.0f) * spacing;
+//					verts[i].y = 0;
+//					verts[i].z = (z - height / 2.0f) * spacing  + spacing;
+//				}
+//				if (x == width + 2) //last of the row, move left one unit
+//				{
+//					verts[i].x = (x - width / 2.0f) * spacing - 2 * spacing;
+//					verts[i].y = 0;
+//					verts[i].z = (z - height / 2.0f) * spacing  + spacing;
+//				}
+//				norms[i] = new Vector3(0.0f,1.0f,0.0f);
+//				uvs[i].x = x / (float)width;
+//				uvs[i].y = z / (float)height;
+//				
+//				i++;
+//			}
+//		}
+//		int t = 0;
+//		for (int n = 0; n < verts.Length; n++)
+//		{
+//			if (n % (width + 3) == width + 2)
+//				continue;
+//			if (n / (height + 3) == height + 2)
+//				continue;
+//			tris[t  ] = n;
+//			tris[t+1] = n + 1;
+//			tris[t+2] = n + width + 1;
+//			tris[t+3] = n + 1;
+//			tris[t+4] = n + width + 2;
+//			tris[t+5] = n + width + 1;
+//			t += 6;
+//		}
+//		Mesh mesh = new Mesh ();
+//		mesh.vertices = verts;
+//		mesh.normals = norms;
+//		mesh.uv = uvs;
+//		mesh.triangles = tris;
+//		mesh.name = "not null";
+//		meshFilter.mesh = mesh;
 	}
 }
