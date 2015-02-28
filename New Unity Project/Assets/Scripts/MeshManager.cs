@@ -44,7 +44,7 @@ public class MeshManager : MonoBehaviour
 			verts[i] = mesh.vertices[i];
 			Random.seed = (int)((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale) * 1000 + meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
 			h = Mathf.PerlinNoise((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale), meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
-			h += Random.Range(0.0f, 2.0f);
+			h += Random.Range(0.0f, 3.0f);
 			if (h < 2.0f)
 				h = 2.0f;
 			h -= 2.0f;
@@ -72,11 +72,11 @@ public class MeshManager : MonoBehaviour
 		float spacing;
 		if (meshDetail == MeshDetail.HIGH)
 		{
-			width =	height = 32;
+			width =	height = 8;
 		}
 		else if (meshDetail == MeshDetail.MED)
 		{
-			width = height = 16;
+			width = height = 8;
 		}
 		else
 		{
@@ -96,9 +96,11 @@ public class MeshManager : MonoBehaviour
 		{
 			for (int z = 0; z < height + 1; z++)
 			{
+				//default case
 				verts[i].x = (x - width / 2.0f) * spacing;
 				verts[i].y = 0;
 				verts[i].z = (z - height / 2.0f) * spacing;
+
 				norms[i] = new Vector3(0.0f,1.0f,0.0f);
 				uvs[i].x = x / (float)width;
 				uvs[i].y = z / (float)height;
