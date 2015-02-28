@@ -20,6 +20,7 @@ public class BlimpMotor : MonoBehaviour
 	private Transform cameraOrigin;
 	public HingeJoint[] propellers;
 	public HingeJoint[] turnFins;
+	public HingeJoint[] liftFins;
 	public ParticleSystem LRocketPar;
 	public ParticleSystem RRocketPar;
 	private float fwdInput;
@@ -61,6 +62,12 @@ public class BlimpMotor : MonoBehaviour
 		{
 			JointSpring js = hj.spring;
 			js.targetPosition = 40 * turnInput;
+			hj.spring = js;
+		}
+		foreach (HingeJoint hj in liftFins)
+		{
+			JointSpring js = hj.spring;
+			js.targetPosition = 20 * liftInput;
 			hj.spring = js;
 		}
 
