@@ -14,15 +14,55 @@ Platform assembly: D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Netw
 Loading D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
 Platform assembly: D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-UnityScript-firstpass.dll (this message is harmless)
 Loading D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
-- Completed reload, in  0.042 seconds
+- Completed reload, in  0.043 seconds
 desktop: 2560x1440 59Hz; virtual: 2560x1440 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
-Joystick connected ("Controller (Xbox 360 Wireless Receiver for Windows)").
- 
-(Filename:  Line: 1344)
+Initialize engine version: 4.5.4f1 (e036f44c54c9)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA Quadro 3000M  (ID=0xe3a)
+    Vendor:   NVIDIA
+    VRAM:     1998 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-UnityScript-firstpass.dll (this message is harmless)
+Loading D:\SB\New folder\Coding4Coding4\New Unity Project\Builds\Network_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
+- Completed reload, in  0.041 seconds
+desktop: 2560x1440 59Hz; virtual: 2560x1440 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+CCuldn't send ouldfuntt send RPCrajectory' to server
 
-Joystick disconnected ("Controller (Xbox 360 Wireless Receiver for Windows)").
  
-(Filename:  Line: 1251)
+(Filename:  L
+i
+ne
+: 2463)
+
+:  Line: 2463)
+
+Couldn't send RPC function 'SetTTajertajy' to server
+
+ 
+(Fi
+l
+en
+amilename:  Line:
+
+46T)
+
+ serThe server has disconnectedhef client. Mientt. Most the server server has shut 
+do
+wn.
+ 
+(Fil  Line: 745)
+
+745)
 

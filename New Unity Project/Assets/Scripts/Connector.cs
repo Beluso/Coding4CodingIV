@@ -5,6 +5,8 @@ public class Connector : MonoBehaviour {
 
 	public string connectionIP = "127.0.0.1";
 	public int connectionPort = 25001;
+	private GameObject playerCube;
+	private float seed;
 
 	void Update()
 	{
@@ -20,17 +22,42 @@ public class Connector : MonoBehaviour {
 	{
 		print (msg);
 	}
-	
-	//Network.OnPlayerConnected
-	void OnClientConnect()
+
+	void OnPlayerConnected(NetworkPlayer player)
 	{
-		//Network.Instantiate(cube)
+		// called on server
+		networkView.RPC ("SetSeed", RPCMode.OthersBuffered, seed);
+	}
+
+	[RPC]
+	void SetSeed(float input)
+	{
+		Random.seed = (int)seed;
+	}
+
+	//Network.OnPlayerConnected
+	void OnPlayerDisconnected(NetworkPlayer player)
+	{
+		// called on server
+		Network.DestroyPlayerObjects (player);
+	}
+	void OnDisconnectedFromServer(NetworkDisconnection info)
+	{
+		Application.Quit ();
+	}
+	void OnServerInitialized()
+	{
+		seed = 100 * Random.value;
+		Random.seed = (int)seed;
+		playerCube = (GameObject)Network.Instantiate (Resources.Load ("Player"), Vector3.zero, Quaternion.identity, 0);
 	}
 
 	void OnConnectedToServer()
 	{
+		// called on client
 		//send MoTD, spawn characters, etc.
 		//Instantiate(cube)
+		playerCube = (GameObject)Network.Instantiate (Resources.Load ("Player"), Vector3.zero, Quaternion.identity, 0);
 	}
 	
 	void OnGUI()

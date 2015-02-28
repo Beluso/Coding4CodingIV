@@ -8,7 +8,8 @@ public class Movement : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-	
+		renderer.material.color = new Color (Random.Range (0f, 1f), Random.Range (0f, 1f), Random.Range (0f, 1f));
+//		renderer.material.color = Color.blue;
 	}
 	
 	// Update is called once per frame
@@ -16,7 +17,7 @@ public class Movement : MonoBehaviour
 	{
 		//NetworkInstantiate
 		//NetworkView.owner
-		if (Network.isServer)
+		if (networkView.isMine)
 		{
 			velocity = Vector3.zero;
 			if (Input.GetKey(KeyCode.W))
@@ -28,6 +29,16 @@ public class Movement : MonoBehaviour
 			{
 				velocity = -speed * transform.forward;
 				transform.position -= speed * transform.forward * Time.deltaTime;
+			}
+			if (Input.GetKey(KeyCode.D))
+			{
+				velocity = speed * transform.forward;
+				transform.position += speed * transform.right * Time.deltaTime;
+			}
+			else if (Input.GetKey(KeyCode.A))
+			{
+				velocity = -speed * transform.forward;
+				transform.position -= speed * transform.right * Time.deltaTime;
 			}
 			networkView.RPC ("SetTrajectory", RPCMode.Others, transform.position, velocity);
 		}
