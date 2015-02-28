@@ -51,12 +51,14 @@
      <Compile Include="Assets\Scripts\BlimpMotor.cs" />
      <Compile Include="Assets\Scripts\Bullet.cs" />
      <Compile Include="Assets\Scripts\BulletManager.cs" />
+     <Compile Include="Assets\Scripts\Connector.cs" />
      <Compile Include="Assets\Scripts\Engine.cs" />
      <Compile Include="Assets\Scripts\Fire.cs" />
      <Compile Include="Assets\Scripts\HeightMap.cs" />
      <Compile Include="Assets\Scripts\JoystickController.cs" />
      <Compile Include="Assets\Scripts\LODManager.cs" />
      <Compile Include="Assets\Scripts\MeshManager.cs" />
+     <Compile Include="Assets\Scripts\Movement.cs" />
      <Compile Include="Assets\Scripts\Prop.cs" />
      <Compile Include="Assets\Scripts\SoundCube.cs" />
      <Compile Include="Assets\Scripts\TerrainManager.cs" />
