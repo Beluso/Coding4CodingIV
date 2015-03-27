@@ -26,7 +26,7 @@ public class NetworkLevelLoad : MonoBehaviour {
 		{
 			GUILayout.BeginArea(new Rect(0, Screen.height - 30, Screen.width, 30));
 			GUILayout.BeginHorizontal();
-			if (Application.loadedLevelName != "City")
+			if (Application.loadedLevelName != "Blimps")
 			{
 				foreach (string level in supportedNetworkLevels)
 				{

@@ -16,8 +16,12 @@ public class SpawnPrefab : MonoBehaviour
 
 	void OnNetworkLoadedLevel ()
 	{
-		Vector3 pos = new Vector3(Random.Range (-1800, 1800), Random.Range (400, 1200), Random.Range (-1800f, 1800));
-		 Network.Instantiate(playerPrefab, pos, transform.rotation, 0);
+		Vector3 pos = new Vector3(Random.Range (-100, 100), Random.Range (100, 400), Random.Range (-100f, 100));
+		Transform newBlimp = (Transform) Network.Instantiate(playerPrefab, pos, transform.rotation, 0);
+		TerrainManager terrainManager = transform.parent.gameObject.GetComponentInChildren<TerrainManager> ();
+		terrainManager.InitPlayer (newBlimp.FindChild("BBlimp").gameObject);
+		LODManager lodManager = transform.parent.gameObject.GetComponentInChildren<LODManager> ();
+		lodManager.InitPlayer (newBlimp.FindChild("BBlimp").gameObject);
 	}
 
 	void OnPlayerDisconnected (NetworkPlayer player)

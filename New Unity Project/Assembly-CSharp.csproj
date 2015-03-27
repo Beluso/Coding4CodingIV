@@ -76,6 +76,7 @@
      <Compile Include="Assets\Scripts\Missile.cs" />
      <Compile Include="Assets\Scripts\MissileArrays.cs" />
      <Compile Include="Assets\Scripts\Movement.cs" />
+     <Compile Include="Assets\Scripts\PlayerUnrenderer.cs" />
      <Compile Include="Assets\Scripts\Prop.cs" />
      <Compile Include="Assets\Scripts\SecondCamLook.cs" />
      <Compile Include="Assets\Scripts\SoundCube.cs" />

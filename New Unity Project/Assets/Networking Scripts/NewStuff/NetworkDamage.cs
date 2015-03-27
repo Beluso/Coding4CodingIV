@@ -20,7 +20,7 @@ public class NetworkDamage : MonoBehaviour
 	public void TakeDamage()
 	{
 		Debug.Log ("GameOver");
-		Vector3 pos = new Vector3(Random.Range (-1800, 1800), Random.Range (400, 1200), Random.Range (-1800f, 1800));
+		Vector3 pos = new Vector3(Random.Range (-100, 100), Random.Range (100, 400), Random.Range (-100f, 100));
 		transform.FindChild("BBlimp").position = pos;
 	}
 }

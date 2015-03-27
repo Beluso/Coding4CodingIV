@@ -9,7 +9,7 @@ public class TerrainManager : MonoBehaviour
 
 	public Tile[] tile;
 	public float tileW;
-	private Transform player;
+	public Transform player;
 
 	public Prop[] propPrefabs;
 	private Dictionary<string, List<Prop>> propPool;
@@ -18,7 +18,6 @@ public class TerrainManager : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		player = GameObject.FindGameObjectWithTag("Player").transform;
 		float dist = float.PositiveInfinity;
 		GameObject[] temp = GameObject.FindGameObjectsWithTag("Terrain");
 		tile = new Tile[temp.Length];
@@ -41,7 +40,12 @@ public class TerrainManager : MonoBehaviour
 //		for (int i = 0; i < tile.Length; i++)
 //			tile[i].gameObject.SetActive(false);
 	}
-	
+
+	public void InitPlayer(GameObject input)
+	{
+		player = input.transform;
+	}
+
 	// Update is called once per frame
 	void Update () 
 	{
@@ -61,43 +65,48 @@ public class TerrainManager : MonoBehaviour
 
 	void TileShift()
 	{
-		foreach (Tile ti in tile)
+		if (player != null)
 		{
-			if (Mathf.Abs (player.position.x - ti.transform.position.x) > shiftThreshold * tileW)
+			foreach (Tile ti in tile)
 			{
-				if (player.position.x > ti.transform.position.x) //player's to the right, move right
-					ti.transform.position = new Vector3(ti.transform.position.x + 3 * tileW, ti.transform.position.y, ti.transform.position.z);
-				else
-					ti.transform.position = new Vector3(ti.transform.position.x - 3 * tileW, ti.transform.position.y, ti.transform.position.z);
-			}
-			if (Mathf.Abs (player.position.z - ti.transform.position.z) > shiftThreshold * tileW)
-			{
-				if (player.position.z > ti.transform.position.z) //player's to the above, move up
-					ti.transform.position = new Vector3(ti.transform.position.x, ti.transform.position.y, ti.transform.position.z + 3 * tileW);
-				else
-					ti.transform.position = new Vector3(ti.transform.position.x, ti.transform.position.y, ti.transform.position.z - 3 * tileW);
+				if (Mathf.Abs (player.position.x - ti.transform.position.x) > shiftThreshold * tileW)
+				{
+					if (player.position.x > ti.transform.position.x) //player's to the right, move right
+						ti.transform.position = new Vector3(ti.transform.position.x + 3 * tileW, ti.transform.position.y, ti.transform.position.z);
+					else
+						ti.transform.position = new Vector3(ti.transform.position.x - 3 * tileW, ti.transform.position.y, ti.transform.position.z);
+				}
+				if (Mathf.Abs (player.position.z - ti.transform.position.z) > shiftThreshold * tileW)
+				{
+					if (player.position.z > ti.transform.position.z) //player's to the above, move up
+						ti.transform.position = new Vector3(ti.transform.position.x, ti.transform.position.y, ti.transform.position.z + 3 * tileW);
+					else
+						ti.transform.position = new Vector3(ti.transform.position.x, ti.transform.position.y, ti.transform.position.z - 3 * tileW);
+				}
 			}
 		}
 	}
 
 	void TileDisplay()
 	{
-		foreach (Tile ti in tile)
+		if (player != null)
 		{
-			Vector2 playerPos = new Vector2 (player.position.x, player.position.z);
-			Vector2 tilePos = new Vector2 (ti.transform.position.x, ti.transform.position.z);
-
-			if (Vector2.Distance(playerPos, tilePos) < displayThreshold * tileW)
+			foreach (Tile ti in tile)
 			{
-				if (ti.active == false)
-					StartCoroutine(ActivateTile(ti));
-			}
-			else
-			{
-				if (ti.active == true)
-					DeactivateTile(ti);
-			}
+				Vector2 playerPos = new Vector2 (player.position.x, player.position.z);
+				Vector2 tilePos = new Vector2 (ti.transform.position.x, ti.transform.position.z);
 
+				if (Vector2.Distance(playerPos, tilePos) < displayThreshold * tileW)
+				{
+					if (ti.active == false)
+						StartCoroutine(ActivateTile(ti));
+				}
+				else
+				{
+					if (ti.active == true)
+						DeactivateTile(ti);
+				}
+			}
 		}
 	}
 	
@@ -147,8 +156,12 @@ public class TerrainManager : MonoBehaviour
 			
 			prop.transform.localScale = new Vector3(prop.transform.localScale.x, prop.transform.localScale.y * scale[i], prop.transform.localScale.z);
 			prop.transform.rotation.Set (prop.transform.rotation.x, prop.transform.rotation.y * rotation[i], prop.transform.rotation.z, prop.transform.rotation.w);
-			prop.transform.position = ti.transform.position;
-			prop.transform.position = new Vector3(ti.transform.position.x + pos[i].x, ti.transform.position.y, ti.transform.position.z + pos[i].y);
+//			prop.transform.position = ti.transform.position;
+
+			RaycastHit raycastHit;
+			Physics.Raycast (new Vector3(ti.transform.position.x + pos[i].x, 100, ti.transform.position.z + pos[i].y), Vector3.down, out raycastHit, 200);
+			if (raycastHit.collider != null)
+				prop.transform.position = new Vector3(ti.transform.position.x + pos[i].x, raycastHit.point.y, ti.transform.position.z + pos[i].y);
 
 			if (i % 20 == 19)
 				yield return null;

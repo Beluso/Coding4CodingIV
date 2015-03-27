@@ -44,7 +44,7 @@ public class MeshManager : MonoBehaviour
 			verts[i] = mesh.vertices[i];
 			Random.seed = (int)((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale) * 1000 + meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
 			h = Mathf.PerlinNoise((meshFilter.gameObject.transform.position.x + mesh.vertices[i].x * localScale), meshFilter.gameObject.transform.position.z + mesh.vertices[i].z * localScale);
-			h += Random.Range(0.0f, 16.0f);
+			h += Random.Range(0.0f, 48.0f);
 			if (h < 4.0f)
 				h = 4.0f;
 			h -= 4.0f;
