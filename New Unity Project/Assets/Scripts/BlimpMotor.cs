@@ -1,31 +1,42 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class BlimpMotor : MonoBehaviour 
 {
-	private Camera mainCam;
+//	private Camera mainCam;
 	public float driveForce = 10.0f;
+	private float driveForceReset;
 	public float turnForce = 20.0f;
 	public float liftForce = 10.0f;
 	public float rocketForce = 20.0f;
-	private float xCamMovement = 0.6f;
-	public float minCamY = -1.0f;
-	public float maxCamY = 1.0f;
-	public float camTimer = 1.0f;
+//	public float minCamY = -1.0f;
+//	public float maxCamY = 1.0f;
+//	public float camTimer = 1.0f;
 	public float lowDrag = 0.2f;
 	public float highDrag = 0.8f;
 	public float lowADrag = 3.0f;
 	public float highADrag = 20.0f;
-	private float camTimerReset;
-	private Transform cameraOrigin;
+//	private float camTimerReset;
+//	private Transform cameraOrigin;
 	public HingeJoint[] propellers;
 	public HingeJoint[] turnFins;
 	public HingeJoint[] liftFins;
+//	public GameObject target;
+//	public GameObject targetOrigin;
+	public GameObject rocketPrefab;
 	public ParticleSystem LRocketPar;
 	public ParticleSystem RRocketPar;
+//	public GameObject secondCam;
+//	public Transform secondCameraOrigin;
 	private float fwdInput;
 	private float turnInput;
 	private float liftInput;
+	
+	public CameraMotor cameraMotor;
+	public MissileArrays missileArray;
+	private Camera mainCamera;
+
 	/*
 	 * List of "Motors":
 	 * Rear/main fans for forward/back
@@ -34,23 +45,30 @@ public class BlimpMotor : MonoBehaviour
 	 * Side thruster for left/right movement
 	 **/
 
+	public void SetActiveBlimp()
+	{
+		missileArray.SetActiveBlimp ();
+		cameraMotor.SetActiveBlimp ();
+	}
+
 	// Use this for initialization
 	void Start () 
 	{
-		camTimerReset = camTimer;
-		mainCam = Camera.main;
-		cameraOrigin = mainCam.transform.parent.FindChild ("CameraOrigin").transform;
+		driveForceReset = driveForce;
+
+		Debug.Log (transform.parent.name);
+		if (networkView.isMine)
+		{
+			SetActiveBlimp ();
+		}
 	}
-	//top speed is approx 55m/s
 
 	// Update is called once per frame
 	void Update ()
 	{
-		camTimer -= Time.deltaTime;
-
 
 //		CorrectDrift ();
-		AdditionalForces();
+//		AdditionalForces();
 
 		foreach (HingeJoint hj in propellers)
 		{
@@ -70,15 +88,6 @@ public class BlimpMotor : MonoBehaviour
 			js.targetPosition = 20 * liftInput;
 			hj.spring = js;
 		}
-
-		if (camTimer <= 0.0f)
-		{
-			camTimer = 0;
-			mainCam.transform.position = Vector3.Lerp (mainCam.transform.position, cameraOrigin.position, Time.deltaTime);
-			mainCam.transform.LookAt (transform.position);
-		}
-
-//		Debug.Log ("XZ magnitude" + Mathf.Sqrt (rigidbody.velocity.x * rigidbody.velocity.x + rigidbody.velocity.z * rigidbody.velocity.z));
 	}
 
 	void AdditionalForces()
@@ -99,9 +108,9 @@ public class BlimpMotor : MonoBehaviour
 		float angle = Vector2.Angle (blVel, blDir);
 //		Debug.Log ("blVel = " + blVel + ", blDir = " + blDir + ", angle = " + angle);
 		if (angle < 90)
-			rigidbody.drag = Mathf.Lerp (lowDrag, highDrag, angle / 90f);
+			rigidbody.drag = Mathf.Lerp(lowDrag, highDrag, Mathf.Clamp(2 * angle / 90f, 0, 1));
 		else
-			rigidbody.drag = Mathf.Lerp(highDrag, lowDrag, angle / 90f);
+			rigidbody.drag = Mathf.Lerp(highDrag, lowDrag, (angle / 90f) / 2);
 
 		// if it's going less than 6 mph, reduce its ability to turn
 		if (Vector2.SqrMagnitude(blVel) < 9.0f)
@@ -118,6 +127,26 @@ public class BlimpMotor : MonoBehaviour
 		// the x and z euler axes need to lerp to zero
 		transform.eulerAngles = new Vector3 (Mathf.Clamp(transform.eulerAngles.x, 0, 30), transform.eulerAngles.y, Mathf.Clamp(transform.eulerAngles.z, 0, 30));
 		transform.eulerAngles = new Vector3 (Mathf.Lerp (transform.eulerAngles.x, 0, Time.deltaTime * 2.0f), transform.eulerAngles.y, Mathf.Lerp (transform.eulerAngles.z, 0, Time.deltaTime * 2.0f));
+	}
+
+	public void Fire(float input)
+	{
+		missileArray.Fire (input);
+	}
+
+	public void Aim(float input)
+	{
+		missileArray.Aim (input);
+		if (input > .1f)
+			driveForce = driveForceReset/2;
+		else
+			driveForce = driveForceReset;
+
+	}
+
+	public void Dodge(float input)
+	{
+
 	}
 
 	public void Accel(float input)
@@ -147,7 +176,7 @@ public class BlimpMotor : MonoBehaviour
 	public void Turn(float input)
 	{
 		turnInput = input;
-		rigidbody.AddTorque (input * Vector3.up * turnForce);
+		rigidbody.AddTorque (input * transform.up * turnForce);
 	}
 
 	public void Rise(float input)
@@ -158,18 +187,11 @@ public class BlimpMotor : MonoBehaviour
 
 	public void CamX(float input)
 	{
-		camTimer = camTimerReset;
-		mainCam.transform.RotateAround (transform.position, Vector3.up,  2 * input * -xCamMovement);
+		cameraMotor.XMovement (input);
 	}
 
 	public void CamY(float input)
 	{
-		camTimer = camTimerReset;
-		mainCam.transform.RotateAround (transform.position, mainCam.transform.right, input * xCamMovement);
-		
-		if (mainCam.transform.localPosition.y > maxCamY)
-			mainCam.transform.RotateAround (transform.position, mainCam.transform.right, -input * xCamMovement);
-		else if (mainCam.transform.localPosition.y < minCamY)
-			mainCam.transform.RotateAround (transform.position, mainCam.transform.right, -input * xCamMovement);
+		cameraMotor.YMovement (input);
 	}
 }

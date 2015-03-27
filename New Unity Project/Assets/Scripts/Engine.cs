@@ -18,11 +18,11 @@ public class Engine : MonoBehaviour
 	{
 		if (pulse == 1)
 		{
-			rigidbody.AddForce(transform.up * force);
+			GetComponent<Rigidbody>().AddForce(transform.up * force);
 		}
 		else if (pulse == -1)
 		{
-			rigidbody.AddForce (-transform.up * force);
+			GetComponent<Rigidbody>().AddForce (-transform.up * force);
 		}
 
 		pulse = 0;
